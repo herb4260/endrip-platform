@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENDRIP - Ecological Neurodevelopmental Risk-Resilience Platform</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .content {
+      padding: 30px;
+    }
+    
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 30px;
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    
+    .tab-btn {
+      padding: 12px;
+      border: none;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.3s;
+      border: 1px solid #ddd;
+    }
+    
+    .tab-btn:hover {
+      background: #f0f0f0;
+    }
+    
+    .tab-btn.active {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #667eea;
+    }
+    
+    .form-group {
+      margin-bottom: 18px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    
+    .form-group input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #ddd;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    
+    .form-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .form-group input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #667eea;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .slider-value {
+      display: inline-block;
+      float: right;
+      font-size: 13px;
+      font-weight: 600;
+      color: #667eea;
+      background: #f0f0f0;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    .helper-text {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-next {
+      background: #667eea;
+      color: white;
+    }
+    
+    .btn-next:hover {
+      background: #764ba2;
+    }
+    
+    .btn-prev {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .btn-prev:hover {
+      background: #e0e0e0;
+    }
+    
+    .btn-calculate {
+      background: #4caf50;
+      color: white;
+      font-size: 16px;
+    }
+    
+    .btn-calculate:hover {
+      background: #45a049;
+    }
+    
+    .result-card {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #667eea;
+    }
+    
+    .score-display {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .score-box {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    
+    .score-label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .score-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #667eea;
+    }
+    
+    .score-range {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.3s;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #667eea;
+    }
+    
+    .loading-spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      font-size: 13px;
+    }
+    
+    .step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #888;
+    }
+    
+    .step-dot.active {
+      background: #667eea;
+      color: white;
+    }
+    
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: #ddd;
+      margin: 0 10px;
+    }
+    
+    .step-line.active {
+      background: #667eea;
+    }
+    
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+    
+    .summary-table tr {
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .summary-table td {
+      padding: 10px;
+    }
+    
+    .summary-table td:first-child {
+      color: #888;
+      width: 60%;
+    }
+    
+    .summary-table td:last-child {
+      font-weight: 600;
+      color: #667eea;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🧬 ENDRIP</h1>
+    <p>Ecological Neurodevelopmental Risk-Resilience Assessment & Intervention Platform</p>
+  </div>
+  
+  <div class="content">
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+      <div class="step-dot active" id="step0">1</div>
+      <div class="step-line" id="line0"></div>
+      <div class="step-dot" id="step1">2</div>
+      <div class="step-line" id="line1"></div>
+      <div class="step-dot" id="step2">3</div>
+      <div class="step-line" id="line2"></div>
+      <div class="step-dot" id="step3">4</div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab(0)">① 아동 평가</button>
+      <button class="tab-btn" onclick="switchTab(1)">② 가정 평가</button>
+      <button class="tab-btn" onclick="switchTab(2)">③ 이웃 평가</button>
+      <button class="tab-btn" onclick="switchTab(3)">④ 보호 요인</button>
+    </div>
+    
+    <!-- Tab 1: 아동 평가 -->
+    <div class="tab-content active" id="tab0">
+      <div class="section-title">1단계: 아동 평가</div>
+      
+      <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #0066cc; border-left: 4px solid #0066cc;">
+        이 섹션에서는 아동의 냉정함/무감정 특성(CU Traits)과 반사회적 행동을 평가합니다.
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 20px; margin-bottom: 15px; color: #333;">
+        Callous-Unemotional (CU) Traits
+      </h3>
+      
+      <div class="form-group">
+        <label>다른 사람의 감정에 신경을 쓰지 않는다
+          <span class="slider-value" id="val0">2.0</span>
+        </label>
+        <input type="range" min="1" max="4" step="0.1" value="2" id="q0" onchange="updateValues()">
+        <div class="helper-text">1 = 전혀 아님 ~ 4 = 매우 그럼</div>
+      </div>
+      
+      <div class="form-group">
+        <label>다른 사람이 고통받아도 괜찮다
+          <span class="slider-value" id="val1">2.0</span>
+        </label>
+        <input type="range" min="1" max="4" step="0.1" value="2" id="q1" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>미안함을 느끼지 않는다
+          <span class="slider-value" id="val2">2.0</span>
+        </label>
+        <input type="range" min="1" max="4" step="0.1" value="2" id="q2" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>감정 표현을 하지 않는 편이다
+          <span class="slider-value" id="val3">2.0</span>
+        </label>
+        <input type="range" min="1" max="4" step="0.1" value="2" id="q3" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>무언가에 흥분하거나 두렵지 않다
+          <span class="slider-value" id="val4">2.0</span>
+        </label>
+        <input type="range" min="1" max="4" step="0.1" value="2" id="q4" onchange="updateValues()">
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 25px; margin-bottom: 15px; color: #333;">
+        반사회적 행동 (Antisocial Behavior)
+      </h3>
+      
+      <div class="form-group">
+        <label>싸우거나 다른 아이를 때렸다 (지난 6개월)
+          <span class="slider-value" id="val5">1.0</span>
+        </label>
+        <input type="range" min="0" max="5" step="0.1" value="1" id="q5" onchange="updateValues()">
+        <div class="helper-text">0 = 없음 ~ 5 = 매우 자주</div>
+      </div>
+      
+      <div class="form-group">
+        <label>거짓말을 했다
+          <span class="slider-value" id="val6">2.0</span>
+        </label>
+        <input type="range" min="0" max="5" step="0.1" value="2" id="q6" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>규칙을 어겼거나 물건을 훔쳤다
+          <span class="slider-value" id="val7">1.0</span>
+        </label>
+        <input type="range" min="0" max="5" step="0.1" value="1" id="q7" onchange="updateValues()">
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 25px; margin-bottom: 15px; color: #333;">
+        신경인지 프로필 (Neurocognitive Profile)
+      </h3>
+      
+      <div class="form-group">
+        <label>충동적으로 행동한다
+          <span class="slider-value" id="val8">2.0</span>
+        </label>
+        <input type="range" min="1" max="4" step="0.1" value="2" id="q8" onchange="updateValues()">
+        <div class="helper-text">1 = 전혀 아님 ~ 4 = 매우 그럼</div>
+      </div>
+      
+      <div class="form-group">
+        <label>화를 조절하기 어렵다
+          <span class="slider-value" id="val9">2.0</span>
+        </label>
+        <input type="range" min="1" max="4" step="0.1" value="2" id="q9" onchange="updateValues()">
+      </div>
+      
+      <div class="button-group">
+        <button class="btn-next" onclick="switchTab(1)">다음 (가정 평가) →</button>
+      </div>
+    </div>
+    
+    <!-- Tab 2: 가정 평가 -->
+    <div class="tab-content" id="tab1">
+      <div class="section-title">2단계: 가정 평가</div>
+      
+      <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #0066cc; border-left: 4px solid #0066cc;">
+        이 섹션에서는 양육 방식, 가정 스트레스, 부모 정신건강을 평가합니다.
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 20px; margin-bottom: 15px; color: #333;">
+        양육 방식 (Parenting Practices)
+      </h3>
+      
+      <div class="form-group">
+        <label>혹독한/거부적 양육 (지난 1개월)
+          <span class="slider-value" id="val10">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q10" onchange="updateValues()">
+        <div class="helper-text">0 = 전혀 없음 ~ 4 = 매우 자주</div>
+      </div>
+      
+      <div class="form-group">
+        <label>따뜻한 양육/칭찬 (보호 요인, 역산)
+          <span class="slider-value" id="val11">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q11" onchange="updateValues()">
+        <div class="helper-text">0 = 거의 없음 ~ 4 = 매우 자주 (높을수록 좋음)</div>
+      </div>
+      
+      <div class="form-group">
+        <label>감시와 구조화 (규칙/감독)
+          <span class="slider-value" id="val12">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q12" onchange="updateValues()">
+        <div class="helper-text">0 = 거의 없음 ~ 4 = 매우 명확함 (높을수록 좋음)</div>
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 25px; margin-bottom: 15px; color: #333;">
+        가정 스트레스 (Family Stress)
+      </h3>
+      
+      <div class="form-group">
+        <label>부모 간 갈등/싸움 (지난 6개월)
+          <span class="slider-value" id="val13">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q13" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>가정의 불안정성
+          <span class="slider-value" id="val14">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q14" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>경제적 어려움
+          <span class="slider-value" id="val15">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q15" onchange="updateValues()">
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 25px; margin-bottom: 15px; color: #333;">
+        부모 정신건강 (Parental Mental Health)
+      </h3>
+      
+      <div class="form-group">
+        <label>부모의 우울/불안
+          <span class="slider-value" id="val16">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q16" onchange="updateValues()">
+      </div>
+      
+      <div class="button-group">
+        <button class="btn-prev" onclick="switchTab(0)">← 이전 (아동 평가)</button>
+        <button class="btn-next" onclick="switchTab(2)">다음 (이웃 평가) →</button>
+      </div>
+    </div>
+    
+    <!-- Tab 3: 이웃 평가 -->
+    <div class="tab-content" id="tab2">
+      <div class="section-title">3단계: 이웃/커뮤니티 평가</div>
+      
+      <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #0066cc; border-left: 4px solid #0066cc;">
+        이 섹션에서는 이웃의 폭력 노출과 사회경제적 상황을 평가합니다.
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 20px; margin-bottom: 15px; color: #333;">
+        이웃 폭력 노출 (Violence Exposure)
+      </h3>
+      
+      <div class="form-group">
+        <label>자신이나 친구가 폭력을 목격했다 (지난 1년)
+          <span class="slider-value" id="val17">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q17" onchange="updateValues()">
+        <div class="helper-text">0 = 없음 ~ 4 = 매우 자주</div>
+      </div>
+      
+      <div class="form-group">
+        <label>학교/동네에서 싸움을 자주 본다
+          <span class="slider-value" id="val18">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q18" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>폭력 때문에 두렵거나 불안하다
+          <span class="slider-value" id="val19">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q19" onchange="updateValues()">
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 25px; margin-bottom: 15px; color: #333;">
+        사회경제적 박탈 (Social Deprivation)
+      </h3>
+      
+      <div class="form-group">
+        <label>가정의 경제 상태가 어렵다
+          <span class="slider-value" id="val20">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q20" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>동네에 좋은 시설/자원이 부족하다
+          <span class="slider-value" id="val21">1.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="1" id="q21" onchange="updateValues()">
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 25px; margin-bottom: 15px; color: #333;">
+        이웃 효능성 (Neighborhood Efficacy) - 보호 요인
+      </h3>
+      
+      <div class="form-group">
+        <label>이웃 사람들이 서로 돕고 지원한다
+          <span class="slider-value" id="val22">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q22" onchange="updateValues()">
+        <div class="helper-text">0 = 거의 없음 ~ 4 = 매우 많음 (높을수록 좋음)</div>
+      </div>
+      
+      <div class="button-group">
+        <button class="btn-prev" onclick="switchTab(1)">← 이전 (가정 평가)</button>
+        <button class="btn-next" onclick="switchTab(3)">다음 (보호 요인) →</button>
+      </div>
+    </div>
+    
+    <!-- Tab 4: 보호 요인 -->
+    <div class="tab-content" id="tab3">
+      <div class="section-title">4단계: 보호 요인 평가</div>
+      
+      <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #0066cc; border-left: 4px solid #0066cc;">
+        이 섹션에서는 아동의 보호 요인(학교 성공, 또래 관계, 개인 강점)을 평가합니다.
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 20px; margin-bottom: 15px; color: #333;">
+        학교 성공 (School Success)
+      </h3>
+      
+      <div class="form-group">
+        <label>학교 성적이 좋다
+          <span class="slider-value" id="val23">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q23" onchange="updateValues()">
+        <div class="helper-text">0 = 매우 낮음 ~ 4 = 매우 높음</div>
+      </div>
+      
+      <div class="form-group">
+        <label>선생님이 아동을 좋아한다
+          <span class="slider-value" id="val24">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q24" onchange="updateValues()">
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 25px; margin-bottom: 15px; color: #333;">
+        또래 관계 (Peer Relationships)
+      </h3>
+      
+      <div class="form-group">
+        <label>친한 친구가 있다
+          <span class="slider-value" id="val25">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q25" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>또래 집단이 긍정적이다 (비행적이지 않음)
+          <span class="slider-value" id="val26">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q26" onchange="updateValues()">
+      </div>
+      
+      <h3 style="font-size: 14px; font-weight: 600; margin-top: 25px; margin-bottom: 15px; color: #333;">
+        개인적 강점 (Personal Strengths)
+      </h3>
+      
+      <div class="form-group">
+        <label>자신감이 있다
+          <span class="slider-value" id="val27">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q27" onchange="updateValues()">
+      </div>
+      
+      <div class="form-group">
+        <label>낙관적이고 문제 해결 능력이 있다
+          <span class="slider-value" id="val28">2.0</span>
+        </label>
+        <input type="range" min="0" max="4" step="0.1" value="2" id="q28" onchange="updateValues()">
+      </div>
+      
+      <div class="button-group">
+        <button class="btn-prev" onclick="switchTab(2)">← 이전 (이웃 평가)</button>
+        <button class="btn-calculate" onclick="calculateResults()">🔍 분석 결과 보기 (결과 대시보드로)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const youthRiskScore = JSON.parse(localStorage.getItem('youthRiskScore')) || {};
+
+function updateValues() {
+  // 모든 값 업데이트
+  for(let i = 0; i < 29; i++) {
+    const val = parseFloat(document.getElementById('q' + i).value);
+    document.getElementById('val' + i).textContent = val.toFixed(1);
+  }
+}
+
+function switchTab(tabNum) {
+  // 모든 탭 숨기기
+  for(let i = 0; i < 4; i++) {
+    document.getElementById('tab' + i).classList.remove('active');
+    document.querySelectorAll('.tab-btn')[i].classList.remove('active');
+    document.getElementById('step' + i).classList.remove('active');
+    if(i < 3) document.getElementById('line' + i).classList.remove('active');
+  }
+  
+  // 선택된 탭 표시
+  document.getElementById('tab' + tabNum).classList.add('active');
+  document.querySelectorAll('.tab-btn')[tabNum].classList.add('active');
+  document.getElementById('step' + tabNum).classList.add('active');
+  for(let i = 0; i < tabNum; i++) {
+    document.getElementById('step' + i).classList.add('active');
+    document.getElementById('line' + i).classList.add('active');
+  }
+  
+  // 페이지 상단으로 스크롤
+  window.scrollTo(0, 0);
+}
+
+function calculateResults() {
+  // 모든 값 수집
+  const scores = {};
+  for(let i = 0; i < 29; i++) {
+    scores['q' + i] = parseFloat(document.getElementById('q' + i).value);
+  }
+  
+  // 점수 계산
+  const cu_callousness = (scores.q0 + scores.q1 + scores.q2) / 3;
+  const cu_unemotional = (scores.q3 + scores.q4) / 2;
+  const cu_total = (cu_callousness + cu_unemotional) / 2;
+  
+  const ab_overt = (scores.q5 + scores.q6 + scores.q7) / 3;
+  const ab_total = ab_overt;
+  
+  const ef_deficit = (scores.q8 + scores.q9) / 2;
+  const er_deficit = (scores.q10) / 1;
+  
+  const family_harsh = (scores.q10 + scores.q13 + scores.q14 + scores.q15) / 4;
+  const family_warmth = (scores.q11 + scores.q12) / 2;
+  const family_stress = (scores.q13 + scores.q14 + scores.q15) / 3;
+  const family_risk = (family_harsh + family_stress) / 2 - (family_warmth * 0.5);
+  
+  const violence_exposure = (scores.q17 + scores.q18 + scores.q19) / 3;
+  const social_deprivation = (scores.q20 + scores.q21) / 2;
+  const neighborhood_efficacy = (scores.q22) / 1;
+  const neighborhood_risk = (violence_exposure + social_deprivation) / 2 - (neighborhood_efficacy * 0.5);
+  
+  const school_protection = (scores.q23 + scores.q24) / 2;
+  const peer_protection = (scores.q25 + scores.q26) / 2;
+  const personal_protection = (scores.q27 + scores.q28) / 2;
+  const protection_total = (school_protection + peer_protection + personal_protection + family_warmth + neighborhood_efficacy) / 5;
+  
+  // Ecological Risk Score
+  const youth_risk = cu_total + (ab_total / 5) + ef_deficit + (er_deficit / 4);
+  const ecological_risk = (youth_risk * 0.35 + Math.max(0, family_risk) * 0.35 + Math.max(0, neighborhood_risk) * 0.30);
+  const ecological_risk_score = Math.min(5, ecological_risk);
+  
+  // Amygdala Reactivity
+  const base_ar = 2.0 + (cu_total * 0.8);
+  const environmental_stress = ((Math.max(0, family_risk) + Math.max(0, neighborhood_risk)) / 2);
+  const environmental_amplification = 1 + (environmental_stress * 0.4);
+  const protection_factor = 1 - (protection_total * 0.3);
+  const amygdala_reactivity = Math.min(8, Math.max(1, base_ar * environmental_amplification * protection_factor));
+  
+  // Risk-Resilience Balance
+  const total_risk = ecological_risk_score + (amygdala_reactivity / 8);
+  const total_protection = protection_total;
+  const balance = (total_risk / 5) - (total_protection / 4);
+  const normalized_balance = balance / 3;
+  const resilience_percentage = ((1 - normalized_balance) / 2) * 100;
+  const risk_percentage = ((1 + normalized_balance) / 2) * 100;
+  
+  // 결과 저장
+  const results = {
+    cu_total: cu_total.toFixed(2),
+    ab_total: ab_total.toFixed(2),
+    ef_deficit: ef_deficit.toFixed(2),
+    er_deficit: er_deficit.toFixed(2),
+    youth_risk: youth_risk.toFixed(2),
+    family_risk: family_risk.toFixed(2),
+    neighborhood_risk: neighborhood_risk.toFixed(2),
+    protection_total: protection_total.toFixed(2),
+    ecological_risk_score: ecological_risk_score.toFixed(2),
+    amygdala_reactivity: amygdala_reactivity.toFixed(2),
+    risk_percentage: risk_percentage.toFixed(1),
+    resilience_percentage: resilience_percentage.toFixed(1),
+    school_protection: school_protection.toFixed(2),
+    peer_protection: peer_protection.toFixed(2),
+    personal_protection: personal_protection.toFixed(2),
+    family_harsh: family_harsh.toFixed(2),
+    family_warmth: family_warmth.toFixed(2)
+  };
+  
+  localStorage.setItem('endrip_results', JSON.stringify(results));
+  localStorage.setItem('endrip_scores', JSON.stringify(scores));
+  
+  // 로딩 화면 표시
+  document.body.innerHTML = '<div style="display:flex; align-items:center; justify-content:center; height:100vh; flex-direction:column; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);"><div style="text-align:center; color:white;"><div style="font-size:48px; margin-bottom:20px;">📊</div><div style="font-size:20px; font-weight:600; margin-bottom:10px;">분석 중입니다...</div><div style="font-size:14px;">결과 대시보드로 이동합니다</div></div></div>';
+  
+  // 1초 후 결과 페이지로 이동
+  setTimeout(() => {
+    window.location.href = 'results.html';
+  }, 1000);
+}
+
+// 초기화
+updateValues();
+</script>
+
+</body>
+</html>
